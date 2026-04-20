@@ -44,7 +44,9 @@ color:#fff;
 overflow:hidden;
 text-align:center;
 padding:20px;
+background:linear-gradient(135deg,#ff758f,#e63946);
 }
+
 .bg-video{
 position:absolute;
 width:100%;
@@ -52,6 +54,7 @@ height:100%;
 object-fit:cover;
 z-index:-2;
 }
+
 .hero::after{
 content:'';
 position:absolute;
@@ -60,6 +63,11 @@ height:100%;
 background:rgba(0,0,0,0.5);
 z-index:-1;
 }
+
+.hero.no-video{
+background:linear-gradient(135deg,#ff758f,#e63946);
+}
+
 .hero h1{
 font-size:2.8rem;
 min-height:56px;
@@ -79,6 +87,7 @@ animation:float 5s infinite ease-in-out;
 .e3{left:50%;top:20%}
 .e4{left:20%;top:70%}
 .e5{right:20%;top:75%}
+
 @keyframes float{
 0%{transform:translateY(0)}
 50%{transform:translateY(-25px)}
@@ -93,7 +102,7 @@ padding:20px 0;
 .slide-track{
 display:flex;
 gap:20px;
-width:calc(250px * 12);
+width:max-content;
 animation:scroll 20s linear infinite;
 }
 .slide-track img{
@@ -308,9 +317,10 @@ height:125px;
 
 <nav><h2>The Cakery</h2></nav>
 
-<div class="hero">
-  <video autoplay muted loop playsinline class="bg-video">
+<div class="hero" id="hero">
+  <video autoplay muted loop playsinline class="bg-video" id="heroVideo" poster="an1.webp">
     <source src="7100823-uhd_3840_2160_30fps.mp4" type="video/mp4">
+    <source src="cake.mp4" type="video/mp4">
   </video>
 
   <h1 id="typing"></h1>
@@ -325,18 +335,25 @@ height:125px;
 
 <div class="slider">
   <div class="slide-track">
-    <img src="an1.webp" alt="">
-    <img src="birthday cake 1.jpg" alt="">
-    <img src="d1.jpg" alt="">
-    <img src="p1.webp" alt="">
-    <img src="an2.webp" alt="">
-    <img src="birthday cake 8.webp" alt="">
-    <img src="d2.webp" alt="">
-    <img src="p2.jpeg" alt="">
-    <img src="an3.jpg" alt="">
-    <img src="birthday cake 9.webp" alt="">
-    <img src="d3.webp" alt="">
-    <img src="p3.webp" alt="">
+    <img src="an1.webp" onerror="this.src='images/anniversary/an1.webp'" alt="">
+    <img src="birthday cake 1.jpg" onerror="this.src='images/birthday/cake1.webp'" alt="">
+    <img src="d1.jpg" onerror="this.src='images/designer/d1.jpg'" alt="">
+    <img src="p1.webp" onerror="this.src='images/photo/p1.webp'" alt="">
+    <img src="an2.webp" onerror="this.src='images/anniversary/an2.webp'" alt="">
+    <img src="birthday cake 8.webp" onerror="this.src='images/birthday/cake2.webp'" alt="">
+    <img src="d2.webp" onerror="this.src='images/designer/d2.webp'" alt="">
+    <img src="p2.jpeg" onerror="this.src='images/photo/p2.jpeg'" alt="">
+    <img src="an3.jpg" onerror="this.src='images/anniversary/an3.jpg'" alt="">
+    <img src="birthday cake 9.webp" onerror="this.src='images/birthday/cake3.webp'" alt="">
+    <img src="d3.webp" onerror="this.src='images/designer/d3.webp'" alt="">
+    <img src="p3.webp" onerror="this.src='images/photo/p3.webp'" alt="">
+
+    <img src="an1.webp" onerror="this.src='images/anniversary/an1.webp'" alt="">
+    <img src="birthday cake 1.jpg" onerror="this.src='images/birthday/cake1.webp'" alt="">
+    <img src="d1.jpg" onerror="this.src='images/designer/d1.jpg'" alt="">
+    <img src="p1.webp" onerror="this.src='images/photo/p1.webp'" alt="">
+    <img src="an2.webp" onerror="this.src='images/anniversary/an2.webp'" alt="">
+    <img src="birthday cake 8.webp" onerror="this.src='images/birthday/cake2.webp'" alt="">
   </div>
 </div>
 
@@ -363,7 +380,7 @@ height:125px;
   <div id="cartItems"></div>
   <h4 id="total">Total ₹0</h4>
   <button type="button" class="checkout-btn" onclick="orderOnWhatsApp()">Checkout</button>
-
+  <div class="helper">Checkout pe order Firebase me save hoga aur WhatsApp bhi open hoga.</div>
 </div>
 
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
@@ -382,6 +399,16 @@ const firebaseConfig = {
 
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
+
+const FALLBACK_IMG = "an1.webp";
+
+const heroVideo = document.getElementById("heroVideo");
+heroVideo.addEventListener("error", function(){
+  document.getElementById("hero").classList.add("no-video");
+});
+heroVideo.addEventListener("loadeddata", function(){
+  document.getElementById("hero").classList.remove("no-video");
+});
 
 let text = "Order Cakes Online 🎂", i = 0;
 function type(){
@@ -457,7 +484,7 @@ function render(d){
   d.forEach(c=>{
     grid.innerHTML += `
       <div class="card">
-        <img src="${c.img}" onclick="openPopup('${c.img}')" alt="${c.name}">
+        <img src="${c.img}" onerror="this.onerror=null;this.src='${FALLBACK_IMG}'" onclick="openPopup(this.src)" alt="${c.name}">
         <h4>${c.name}</h4>
         <p>₹${c.price}</p>
         <button type="button" class="btn" onclick="addToCart('${c.name}', ${c.price})">Add</button>
@@ -564,8 +591,6 @@ function openWhatsApp(total){
 }
 
 function orderOnWhatsApp(){
-  console.log("Checkout clicked");
-
   if(cart.length === 0){
     alert("Cart is empty.");
     return;
@@ -584,19 +609,14 @@ function orderOnWhatsApp(){
     total += i.price * i.qty;
   });
 
-  alert("Processing order...");
-
   db.collection("orders").add({
     items: orderItems,
     total: total,
     createdAt: firebase.firestore.FieldValue.serverTimestamp(),
     status: "new"
   }).then(()=>{
-    alert("Order saved successfully ✅");
     openWhatsApp(total);
-  }).catch((error)=>{
-    console.error("Firestore error:", error);
-    alert("Firebase save fail hua. WhatsApp order open kar raha hoon.");
+  }).catch(()=>{
     openWhatsApp(total);
   });
 }
