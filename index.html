@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Cakery</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif}
+
+body{
+background: linear-gradient(135deg,#ffe5ec,#fff,#e0f7fa);
+animation:fadeIn 1s ease;
+padding-bottom:280px;
+}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+
+nav{
+display:flex;justify-content:space-between;align-items:center;
+padding:15px 20px;
+background:rgba(255,255,255,0.7);
+backdrop-filter: blur(10px);
+box-shadow:0 5px 20px rgba(0,0,0,0.1);
+position:sticky;
+top:0;
+z-index:100;
+}
+nav h2{
+font-size:1.8rem;
+background: linear-gradient(90deg,#e63946,#ff758f);
+-webkit-background-clip:text;
+color:transparent;
+}
+
+.hero{
+position:relative;
+height:400px;
+display:flex;
+flex-direction:column;
+justify-content:center;
+align-items:center;
+color:#fff;
+overflow:hidden;
+text-align:center;
+padding:20px;
+}
+.bg-video{
+position:absolute;
+width:100%;
+height:100%;
+object-fit:cover;
+z-index:-2;
+}
+.hero::after{
+content:'';
+position:absolute;
+width:100%;
+height:100%;
+background:rgba(0,0,0,0.5);
+z-index:-1;
+}
+.hero h1{
+font-size:2.8rem;
+min-height:56px;
+}
+.hero p{
+margin-top:10px;
+font-size:1.05rem;
+}
+
+.emoji{
+position:absolute;
+font-size:30px;
+animation:float 5s infinite ease-in-out;
+}
+.e1{left:10%;top:30%}
+.e2{right:10%;top:40%}
+.e3{left:50%;top:20%}
+.e4{left:20%;top:70%}
+.e5{right:20%;top:75%}
+@keyframes float{
+0%{transform:translateY(0)}
+50%{transform:translateY(-25px)}
+100%{transform:translateY(0)}
+}
+
+.slider{
+overflow:hidden;
+background:#fff;
+padding:20px 0;
+}
+.slide-track{
+display:flex;
+gap:20px;
+width:calc(250px * 12);
+animation:scroll 20s linear infinite;
+}
+.slide-track img{
+width:220px;
+height:150px;
+border-radius:12px;
+object-fit:cover;
+transition:0.3s;
+}
+.slide-track img:hover{transform:scale(1.08)}
+@keyframes scroll{
+0%{transform:translateX(0)}
+100%{transform:translateX(-50%)}
+}
+
+.section{
+padding:50px 20px;
+max-width:1200px;
+margin:auto;
+opacity:0;
+transform:translateY(40px);
+transition:0.8s;
+}
+.show{
+opacity:1;
+transform:translateY(0);
+}
+.section h2{
+margin-bottom:18px;
+color:#222;
+}
+
+.categories{
+display:flex;
+gap:15px;
+flex-wrap:wrap;
+margin-bottom:25px;
+}
+.cat{
+background:#fff;
+padding:10px 18px;
+border-radius:25px;
+cursor:pointer;
+box-shadow:0 5px 15px rgba(0,0,0,0.1);
+transition:0.3s;
+user-select:none;
+}
+.cat:hover{transform:translateY(-4px)}
+.active{
+background:linear-gradient(90deg,#e63946,#ff758f);
+color:#fff;
+}
+
+.grid{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+gap:25px;
+}
+.card{
+background:#fff;
+border-radius:15px;
+overflow:hidden;
+opacity:0;
+transform:translateY(30px);
+transition:0.4s;
+box-shadow:0 10px 25px rgba(0,0,0,0.1);
+}
+.card.show{
+opacity:1;
+transform:translateY(0);
+}
+.card:hover{
+transform:translateY(-10px) scale(1.02);
+box-shadow:0 20px 40px rgba(0,0,0,0.18);
+}
+.card img{
+width:100%;
+height:180px;
+object-fit:cover;
+cursor:pointer;
+display:block;
+}
+.card h4{
+padding:10px 10px 6px;
+font-size:1rem;
+}
+.card p{
+padding:0 10px;
+color:#e63946;
+font-weight:600;
+}
+.btn{
+margin:10px;
+padding:10px;
+background:linear-gradient(90deg,#e63946,#ff758f);
+color:#fff;
+border:none;
+border-radius:8px;
+width:calc(100% - 20px);
+cursor:pointer;
+transition:0.25s;
+font-weight:600;
+}
+.btn:hover{transform:scale(1.04)}
+
+.popup{
+position:fixed;
+top:0;left:0;
+width:100%;height:100%;
+background:rgba(0,0,0,0.9);
+display:none;
+justify-content:center;
+align-items:center;
+z-index:999;
+padding:20px;
+}
+.popup img{
+max-width:90%;
+max-height:90%;
+border-radius:10px;
+}
+
+.cart{
+position:fixed;
+bottom:0;
+left:0;
+width:100%;
+background:#fff;
+border-radius:20px 20px 0 0;
+padding:15px;
+max-height:260px;
+overflow-y:auto;
+box-shadow:0 -5px 20px rgba(0,0,0,0.2);
+z-index:200;
+}
+.cart-title{
+font-weight:700;
+margin-bottom:10px;
+font-size:1rem;
+}
+.cart-item{
+display:flex;
+justify-content:space-between;
+align-items:center;
+gap:10px;
+margin-bottom:10px;
+padding-bottom:10px;
+border-bottom:1px solid #eee;
+}
+.cart-item-name{
+flex:1;
+font-size:14px;
+}
+.cart-controls{
+display:flex;
+align-items:center;
+gap:8px;
+}
+.qty-btn{
+background:#e63946;
+color:#fff;
+border:none;
+padding:5px 10px;
+border-radius:5px;
+cursor:pointer;
+font-weight:700;
+}
+.cart-price{
+min-width:70px;
+text-align:right;
+font-weight:600;
+color:#e63946;
+}
+.checkout-btn{
+background:linear-gradient(90deg,#e63946,#ff758f);
+color:#fff;
+padding:12px;
+border:none;
+border-radius:10px;
+margin-top:10px;
+width:100%;
+font-size:1rem;
+font-weight:700;
+cursor:pointer;
+}
+#total{
+margin-top:8px;
+font-size:1.1rem;
+}
+.empty-cart{
+color:#666;
+font-size:14px;
+}
+.helper{
+font-size:12px;
+color:#777;
+margin-top:6px;
+}
+
+@media (max-width:600px){
+.hero h1{font-size:2rem}
+.hero p{font-size:0.95rem}
+.slide-track img{
+width:180px;
+height:125px;
+}
+}
+</style>
+</head>
+
+<body>
+
+<nav><h2>The Cakery</h2></nav>
+
+<div class="hero">
+  <video autoplay muted loop playsinline class="bg-video">
+    <source src="7100823-uhd_3840_2160_30fps.mp4" type="video/mp4">
+  </video>
+
+  <h1 id="typing"></h1>
+  <p>Same day delivery | Fresh cakes</p>
+
+  <div class="emoji e1">🎂</div>
+  <div class="emoji e2">🧁</div>
+  <div class="emoji e3">🍰</div>
+  <div class="emoji e4">🍩</div>
+  <div class="emoji e5">🍪</div>
+</div>
+
+<div class="slider">
+  <div class="slide-track">
+    <img src="an1.webp" alt="">
+    <img src="birthday cake 1.jpg" alt="">
+    <img src="d1.jpg" alt="">
+    <img src="p1.webp" alt="">
+    <img src="an2.webp" alt="">
+    <img src="birthday cake 8.webp" alt="">
+    <img src="d2.webp" alt="">
+    <img src="p2.jpeg" alt="">
+    <img src="an3.jpg" alt="">
+    <img src="birthday cake 9.webp" alt="">
+    <img src="d3.webp" alt="">
+    <img src="p3.webp" alt="">
+  </div>
+</div>
+
+<div class="section">
+  <h2>Categories</h2>
+
+  <div class="categories">
+    <div class="cat active" onclick="filter('all', event)">All</div>
+    <div class="cat" onclick="filter('birthday', event)">Birthday</div>
+    <div class="cat" onclick="filter('anniversary', event)">Anniversary</div>
+    <div class="cat" onclick="filter('designer', event)">Designer</div>
+    <div class="cat" onclick="filter('photo', event)">Photo Cakes</div>
+  </div>
+
+  <div class="grid" id="cakeGrid"></div>
+</div>
+
+<div id="imgPopup" class="popup" onclick="closePopup()">
+  <img id="popupImg" alt="">
+</div>
+
+<div class="cart">
+  <div class="cart-title">🛒 Your Cart</div>
+  <div id="cartItems"></div>
+  <h4 id="total">Total ₹0</h4>
+  <button type="button" class="checkout-btn" onclick="orderOnWhatsApp()">Checkout</button>
+
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+
+<script>
+const firebaseConfig = {
+  apiKey: "AIzaSyDSEixihyK-18psi50yyn4Y8xPPuZ4sQY4",
+  authDomain: "thecakery-21f23.firebaseapp.com",
+  projectId: "thecakery-21f23",
+  storageBucket: "thecakery-21f23.firebasestorage.app",
+  messagingSenderId: "1074117040350",
+  appId: "1:1074117040350:web:9cd18a1172f6e2223c8a4f",
+  measurementId: "G-RR24S703BL"
+};
+
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+
+let text = "Order Cakes Online 🎂", i = 0;
+function type(){
+  if(i < text.length){
+    document.getElementById("typing").innerHTML += text[i];
+    i++;
+    setTimeout(type, 40);
+  }
+}
+type();
+
+function revealSections(){
+  document.querySelectorAll('.section').forEach(sec=>{
+    if(sec.getBoundingClientRect().top < window.innerHeight - 100){
+      sec.classList.add('show');
+    }
+  });
+}
+window.addEventListener('scroll', revealSections);
+window.addEventListener('load', revealSections);
+
+let cakes = [];
+let data = {
+  birthday:[
+    "images/birthday/cake1.webp",
+    "images/birthday/cake2.webp",
+    "images/birthday/cake3.webp",
+    "images/birthday/cake4.webp",
+    "images/birthday/cake5.webp",
+    "images/birthday/cake6.webp"
+  ],
+  anniversary:[
+    "images/anniversary/an1.webp",
+    "images/anniversary/an2.webp",
+    "images/anniversary/an3.jpg",
+    "images/anniversary/an4.jpg",
+    "images/anniversary/an5.webp",
+    "images/anniversary/an6.avif"
+  ],
+  designer:[
+    "images/designer/d1.jpg",
+    "images/designer/d2.webp",
+    "images/designer/d3.webp",
+    "images/designer/d4.jpg",
+    "images/designer/d5.jpg",
+    "images/designer/d6.jpg"
+  ],
+  photo:[
+    "images/photo/p1.webp",
+    "images/photo/p2.jpeg",
+    "images/photo/p3.webp",
+    "images/photo/p4.webp",
+    "images/photo/p5.webp",
+    "images/photo/p6.jpg"
+  ]
+};
+
+for(let cat in data){
+  data[cat].forEach((img,i)=>{
+    cakes.push({
+      name: cat + " Cake " + (i + 1),
+      price: 400 + i * 20,
+      category: cat,
+      img: img
+    });
+  });
+}
+
+function render(d){
+  let grid = document.getElementById("cakeGrid");
+  grid.innerHTML = '';
+
+  d.forEach(c=>{
+    grid.innerHTML += `
+      <div class="card">
+        <img src="${c.img}" onclick="openPopup('${c.img}')" alt="${c.name}">
+        <h4>${c.name}</h4>
+        <p>₹${c.price}</p>
+        <button type="button" class="btn" onclick="addToCart('${c.name}', ${c.price})">Add</button>
+      </div>
+    `;
+  });
+
+  setTimeout(()=>{
+    document.querySelectorAll('.card').forEach(card=>card.classList.add('show'));
+  },100);
+}
+
+function filter(cat, ev){
+  document.querySelectorAll('.cat').forEach(c=>c.classList.remove('active'));
+  if(ev && ev.target){
+    ev.target.classList.add('active');
+  }
+
+  if(cat === 'all'){
+    render(cakes);
+  } else {
+    render(cakes.filter(c=>c.category === cat));
+  }
+}
+
+function openPopup(src){
+  document.getElementById("imgPopup").style.display = "flex";
+  document.getElementById("popupImg").src = src;
+}
+function closePopup(){
+  document.getElementById("imgPopup").style.display = "none";
+}
+
+let cart = [];
+
+function addToCart(name, price){
+  let item = cart.find(i => i.name === name);
+  if(item){
+    item.qty++;
+  } else {
+    cart.push({name, price, qty:1});
+  }
+  renderCart();
+}
+
+function inc(name){
+  let item = cart.find(i => i.name === name);
+  if(item){
+    item.qty++;
+    renderCart();
+  }
+}
+
+function dec(name){
+  let item = cart.find(i => i.name === name);
+  if(!item) return;
+
+  if(item.qty > 1){
+    item.qty--;
+  } else {
+    cart = cart.filter(i => i.name !== name);
+  }
+  renderCart();
+}
+
+function renderCart(){
+  let html = '';
+  let total = 0;
+
+  if(cart.length === 0){
+    html = '<div class="empty-cart">No items added yet.</div>';
+  } else {
+    cart.forEach(i=>{
+      html += `
+        <div class="cart-item">
+          <div class="cart-item-name">${i.name}</div>
+          <div class="cart-controls">
+            <button type="button" class="qty-btn" onclick="dec('${i.name}')">-</button>
+            <span>${i.qty}</span>
+            <button type="button" class="qty-btn" onclick="inc('${i.name}')">+</button>
+          </div>
+          <div class="cart-price">₹${i.price * i.qty}</div>
+        </div>
+      `;
+      total += i.price * i.qty;
+    });
+  }
+
+  document.getElementById('cartItems').innerHTML = html;
+  document.getElementById('total').innerText = 'Total ₹' + total;
+}
+
+function buildWhatsAppMessage(total){
+  let msg = '🛒 Order:%0A';
+  cart.forEach(i=>{
+    msg += `${i.name} x${i.qty} = ₹${i.price * i.qty}%0A`;
+  });
+  msg += `Total ₹${total}`;
+  return 'https://wa.me/919953416766?text=' + encodeURIComponent(msg);
+}
+
+function openWhatsApp(total){
+  window.location.href = buildWhatsAppMessage(total);
+}
+
+function orderOnWhatsApp(){
+  console.log("Checkout clicked");
+
+  if(cart.length === 0){
+    alert("Cart is empty.");
+    return;
+  }
+
+  let orderItems = [];
+  let total = 0;
+
+  cart.forEach(i=>{
+    orderItems.push({
+      name: i.name,
+      qty: i.qty,
+      price: i.price,
+      lineTotal: i.price * i.qty
+    });
+    total += i.price * i.qty;
+  });
+
+  alert("Processing order...");
+
+  db.collection("orders").add({
+    items: orderItems,
+    total: total,
+    createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+    status: "new"
+  }).then(()=>{
+    alert("Order saved successfully ✅");
+    openWhatsApp(total);
+  }).catch((error)=>{
+    console.error("Firestore error:", error);
+    alert("Firebase save fail hua. WhatsApp order open kar raha hoon.");
+    openWhatsApp(total);
+  });
+}
+
+render(cakes);
+renderCart();
+</script>
+
+</body>
+</html>
