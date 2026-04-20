@@ -44,15 +44,12 @@ color:#fff;
 overflow:hidden;
 text-align:center;
 padding:20px;
-background:linear-gradient(135deg,#ff758f,#e63946);
 }
 
-.bg-video{
-position:absolute;
-width:100%;
-height:100%;
-object-fit:cover;
-z-index:-2;
+.hero-image{
+background:
+linear-gradient(rgba(0,0,0,0.45), rgba(0,0,0,0.45)),
+url('an1.webp') center/cover no-repeat;
 }
 
 .hero::after{
@@ -60,12 +57,15 @@ content:'';
 position:absolute;
 width:100%;
 height:100%;
-background:rgba(0,0,0,0.5);
-z-index:-1;
+background:rgba(0,0,0,0.15);
+z-index:0;
 }
 
-.hero.no-video{
-background:linear-gradient(135deg,#ff758f,#e63946);
+.hero h1,
+.hero p,
+.emoji{
+position:relative;
+z-index:1;
 }
 
 .hero h1{
@@ -317,12 +317,7 @@ height:125px;
 
 <nav><h2>The Cakery</h2></nav>
 
-<div class="hero" id="hero">
-  <video autoplay muted loop playsinline class="bg-video" id="heroVideo" poster="an1.webp">
-    <source src="7100823-uhd_3840_2160_30fps.mp4" type="video/mp4">
-    <source src="cake.mp4" type="video/mp4">
-  </video>
-
+<div class="hero hero-image" id="hero">
   <h1 id="typing"></h1>
   <p>Same day delivery | Fresh cakes</p>
 
@@ -401,14 +396,6 @@ firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 
 const FALLBACK_IMG = "an1.webp";
-
-const heroVideo = document.getElementById("heroVideo");
-heroVideo.addEventListener("error", function(){
-  document.getElementById("hero").classList.add("no-video");
-});
-heroVideo.addEventListener("loadeddata", function(){
-  document.getElementById("hero").classList.remove("no-video");
-});
 
 let text = "Order Cakes Online 🎂", i = 0;
 function type(){
